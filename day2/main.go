@@ -25,32 +25,19 @@ func main(){
 		"334	275	395	128	347	118	353	281	430	156	312	386	160	194	63	141",
 		"146	1116	153	815	2212	2070	599	3018	2640	47	125	2292	165	2348	2694	184",
 		"1704	2194	1753	146	2063	1668	1280	615	163	190	2269	1856	150	158	2250	2459"}
+	sum1, sum2 := 0,0
 
-	
-	sum := 0
-	//PART 1
 	for i := range in {
 		row := toInts(in[i])
 		min, max := findExtrema(row)
-		sum += (max - min)
+		sum1 += (max - min)
+		sum2 += findDivisors(row)
 	}
-	fmt.Println("Part 1: ", sum, "in ", time.Since(t0))
-	
-	sum = 0
-	//PART 2
-	for i := range in {
-		row := toInts(in[i])
-		sum += findDivisors(row)
-	}
-	fmt.Println("Part 2: ", sum, "in ", time.Since(t0))
+	fmt.Println("Part 1: ", sum1, " Part 2: ", sum2, "in ", time.Since(t0))
 }
 
 func toInts(in string) (a []int) {
 	x := strings.Split(in, "\t")
-	for i := range x {
-		x[i] = strings.TrimSpace(x[i])
-	}
-
 	for i := range x {
 		tmp,_ := strconv.Atoi(x[i])
 		a = append(a, tmp)
@@ -59,7 +46,7 @@ func toInts(in string) (a []int) {
 }
 func findExtrema(a []int)(min,max int) {
 	min,max = a[0],a[0]
-	for i := 0; i < len(a);i++ {
+	for i := range a {
 		if min > a[i] {
 			min = a[i]
 		}
@@ -71,7 +58,7 @@ func findExtrema(a []int)(min,max int) {
 }
 func findDivisors(a []int)(result int) {
 	for i := range a {
-		for j := 0; j < len(a); j++ {
+		for j := range a {
 			if j == i {
 				continue
 			}
