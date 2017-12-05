@@ -5,6 +5,7 @@ import (
 	"strings"
 	"os"
 	"bufio"
+	"sort"
 )
 
 
@@ -17,7 +18,10 @@ func main(){
 		m := make(map[string]int) 
 		s := strings.Split(scanner.Text(), " ")
 		for i := range s {
-			m[s[i]]++
+			tmp := strings.Split(s[i], "")
+			sort.Strings(tmp)
+			a := strings.Join(tmp,"")
+			m[a]++
 		}
 		for i := range m {
 			if m[i] > 1 {
