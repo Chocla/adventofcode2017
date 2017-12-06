@@ -5,13 +5,15 @@ import (
 )
 
 func main(){
-	//test := []int{0,2,7,0}
+	//input := []int{0,2,7,0}
 	input := []int{5,1,10,0,1,7,13,14,3,12,8,10,7,12,0,6}
 	var seenArrays [][]int
 	seenArrays = append(seenArrays,[]int{5,1,10,0,1,7,13,14,3,12,8,10,7,12,0,6})
+	//seenArrays = append(seenArrays, []int{0,2,7,0})
 	seen := false
 	count := 0
-	
+	m := make(map[int][]int)
+
 	for !seen {
 		count++
 		max,index := max(input)
@@ -27,9 +29,13 @@ func main(){
 		a := make([]int, len(input))
 		copy(a,input)
 		seenArrays = append(seenArrays,a)
+		m[count] = a
 	}
-	fmt.Println(count)
-
+	for i := range m {
+		if equal(m[i],input) && i != count{
+			fmt.Println(count-i)
+		}
+	}
 }
 func equal(a,b []int)(bool) {
 	if len(a) != len(b) {
