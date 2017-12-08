@@ -9,34 +9,42 @@ import (
 )
 type operation struct {
 	reg string
-	inc bool
+	inc bool //+= if true, -= if false
 	incVal, operVal int
 	operReg, oper string
 }
+
 const INPUT_PATH = "input.txt"
+
 func main(){
 	reg := make(map[string]int)
 	operationSlice := make([]operation,0)
+	max := 0
 
 	file,_ := os.Open(INPUT_PATH)
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
+	
+	//get list of operations from input file
 	for scanner.Scan() {
 		line := scanner.Text()
 		operationSlice = append(operationSlice, parseOperation(line))
 	}
-	//create map values for all registries
+
+	//init map values for all registries
 	for i := range operationSlice {
 		reg[operationSlice[i].reg] = 0
 	}
+
 	//evalute operations
 	for i := range operationSlice {
 		reg = evaluate(reg, operationSlice[i])
-	}
-	max := 0
-	for i := range reg {
-		if reg[i] > max {
-			 max = reg[i]
+
+		//part two: maximum registry value at any point in computation
+		for i := range reg {
+			if reg[i] > max {
+				 max = reg[i]
+			}
 		}
 	}
 
@@ -49,9 +57,9 @@ func evaluate(reg map[string]int, o operation) (map[string]int) {
 	right := o.operVal
 
 	switch o.oper {
-	case "<": expression = left < right 
+	case "<":  expression = left <  right 
 		break
-	case ">": expression = left > right
+	case ">":  expression = left >  right
 		break
 	case ">=": expression = left >= right
 		break
