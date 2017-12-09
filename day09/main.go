@@ -20,46 +20,28 @@ import (
 
 func main() {
 	test,_ := ioutil.ReadFile("in.txt")
-	fmt.Println(string(test))
-	trash,skip := false,false
+	//fmt.Println(string(test))
+	trash := false
 	score := 0
-
-	level := 0
-	for i := range test {
-
-		
+	for i := 0; i < len(test); i++ {
 		char := string(test[i])
-		if skip {
-			skip = false
+		if char == ">" {
+			trash = false
 			continue
 		}
-
-		switch char {
-		case "{": 
-			if trash {
-				break
-			}
-			level++
-			break
-		case "}": 
-			if trash {
-				break
-			}
-			score+= level
-			level--
-			break
-		case "<": 
+		if char == "<" && !trash{
 			trash = true
-			break
-		case ">":
-			trash = false
-			break
-		case "!":
-			skip = true
-			break
-		default:
-			break
+			continue
 		}
+		if char == "!" {
+			i++
+			continue
+		}
+		if trash && (char != "!"){
+			fmt.Println(char,trash)
+			score++
+		}
+		
 	}
 	fmt.Println(score)
 }
