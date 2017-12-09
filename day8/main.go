@@ -6,7 +6,9 @@ import (
 	"bufio"
 	"strings"
 	"strconv"
+	"time"
 )
+
 type operation struct {
 	reg string
 	inc bool //+= if true, -= if false
@@ -17,10 +19,10 @@ type operation struct {
 const INPUT_PATH = "input.txt"
 
 func main(){
+	t0 := time.Now()
 	reg := make(map[string]int)
 	operationSlice := make([]operation,0)
 	max := 0
-
 	file,_ := os.Open(INPUT_PATH)
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
@@ -31,35 +33,30 @@ func main(){
 		operationSlice = append(operationSlice, parseOperation(line))
 	}
 
-	//init map values for all registries
-	for i := range operationSlice {
-		reg[operationSlice[i].reg] = 0
-	}
-
 	//evalute operations
 	for i := range operationSlice {
-		reg = evaluate(reg, operationSlice[i])
+		evaluate(reg, operationSlice[i])
 
 		//part two: maximum registry value at any point in computation
-		for i := range reg {
-			if reg[i] > max {
-				 max = reg[i]
-			}
+		//only need to check one the mostly recently changed value
+		if reg[operationSlice[i].reg] > max {
+			max = reg[operationSlice[i].reg]
 		}
 	}
-
-	fmt.Println(max)
+	t1 := time.Since(t0)
+	fmt.Println("Answer: ", max, "Time: ",t1)
+	
 }
 
-func evaluate(reg map[string]int, o operation) (map[string]int) {
+func evaluate(reg map[string]int, o operation) {
 	var expression bool
 	left := reg[o.operReg]
 	right := o.operVal
 
 	switch o.oper {
-	case "<":  expression = left <  right 
+	case "<":  expression = left  < right 
 		break
-	case ">":  expression = left >  right
+	case ">":  expression = left  > right
 		break
 	case ">=": expression = left >= right
 		break
@@ -78,21 +75,17 @@ func evaluate(reg map[string]int, o operation) (map[string]int) {
 			reg[o.reg] -= o.incVal
 		}
 	}
-
-	return reg
 }
 
 func parseOperation(input string)(o operation) {
 	inputSlice := strings.Split(input, " ")
-	
-	o.reg, o.operReg, o.oper = inputSlice[0],inputSlice[4],inputSlice[5]
-	
+
+	o.reg, o.operReg, o.oper = inputSlice[0], inputSlice[4], inputSlice[5]
 	if inputSlice[1] == "inc" {
 		o.inc = true
 	}
 	o.incVal ,_ = strconv.Atoi(inputSlice[2])
 	o.operVal,_ = strconv.Atoi(inputSlice[6])
-
 	return
 }
 
