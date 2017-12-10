@@ -6,22 +6,33 @@ import(
 	"time"
 )
 const listSize = 256
+const input = "192,69,168,160,78,1,166,28,0,83,198,2,254,255,41,12"
+
 func main() {
 	t0 := time.Now()
 	//convert string input into slice of bytes
-	input := "192,69,168,160,78,1,166,28,0,83,198,2,254,255,41,12"
+
 	lengths := []byte(input)
 	lengths = append(lengths,  []byte{17,31,73,47,23}...)
 	
 	//make a slice of integers from 0 to 255
 	list := make([]int,listSize)
-	position := 0
-	step := 0
 	for i := range list {
 		list[i] = i
 	}
 
 	//sparse hash
+	sparseHash(list,lengths)
+
+	//reduce to dense hash
+	dense := denseHash(list)
+	
+	//encode and display as hexadecimal
+	fmt.Println(hex.EncodeToString(dense),"\nTime: ",time.Since(t0))
+} 
+
+func sparseHash(list []int, lengths []byte)  {
+	position,step := 0,0
 	for j := 0; j < 64; j++ {
 		for i := range lengths {
 			reverse(list,position,int(lengths[i]))
@@ -29,8 +40,9 @@ func main() {
 			step++
 		}
 	}
+}
 
-	//reduce to dense hash
+func denseHash(list []int)([]byte) {
 	dense := make([]byte,16)
 	for i := 0; i < 16; i++ {
 		block := list[16*i:16*(i+1)]
@@ -39,10 +51,8 @@ func main() {
 			dense[i] ^= byte(block[j])
 		}
 	}
-	
-	//encode and display as hexadecimal
-	fmt.Println(hex.EncodeToString(dense),"\nTime: ",time.Since(t0))
-} 
+	return dense
+}
 //reversing function that allows for wrapping around the slice
 func reverse(a []int, start, length int) {
 	b := make([]int, length)
