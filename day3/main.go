@@ -24,10 +24,8 @@ func main() {
 			dir = (dir + 1) % 4
 			for j := 0; j < step ; j++ {
 				col,row = moveDir(dir,row,col)
-				//fmt.Println(row,col)
 				if row >= size || dir >= size {
 					found = true
-					//fmt.Println(spiral)
 					break
 				}
 				spiral[row][col] = sumAdj(spiral,row,col)
