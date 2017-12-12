@@ -10,16 +10,44 @@ const path = "input.txt"
 
 func main() {
 	pipes := parseInput()
-	x := countConnections(pipes)
-	fmt.Println(x)
+	x := countGroups(pipes) 
+
+	
+	fmt.Println(x-1)
 }
-func countConnections(pipes [][]string) (c int) {
+func countGroups(pipes [][]string) (c int) {
+	m := make(map[string]bool) 
+	for i := range pipes {
+		m[pipes[i][0]] = false
+	}
+	done := false
+	for c = 0; !done ; c++ {
+		done = true
+		var rep string
+		for i := range pipes {
+			if !m[pipes[i][0]] {
+				done = false
+				rep = pipes[i][0]
+				break
+			}
+		}
+		tmp := countConnections(rep,pipes)
+		for i := range tmp {
+			if tmp[i] {
+				m[i] = true
+			}
+		}
+	}
+
+	return c
+}
+func countConnections(rep string, pipes [][]string) (map[string]bool) {
 	m := make(map[string]bool)
 	changed := true
 	for i := range pipes {
 		m[pipes[i][0]] = false
 	}
-	m["0"] = true
+	m[rep] = true
 	//loop through until nothing is changed
 	for changed {
 		changed = false
@@ -40,13 +68,8 @@ func countConnections(pipes [][]string) (c int) {
 			}
 		}
 	}
-	for i := range m {
-		if m[i] {
-			c++
-		}
-	}
 	//fmt.Println(m)
-	return 
+	return m
 }
 
 func parseInput() (pipes [][]string) {
