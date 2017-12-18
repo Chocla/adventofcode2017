@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 const (
-	iterations = 40000000
+	iterations = 5000000
 	factorA = 16807
 	factorB = 48271
 	modValue = 2147483647 //2^32 - 1
@@ -18,13 +18,23 @@ func simulation(a,b int) (equal int) {
 			equal++
 		}
 	}
-
 	return
 }
 
-func genVal(prevVal, factor int) (val int) {
-	return (prevVal*factor) % modValue
+func genVal(prevVal,factor int) (a int) {
+	a = (prevVal*factor) % modValue
+	if factor == factorA {
+		for a % 4 != 0 {
+			a = (a*factor) % modValue
+		}
+	} else {
+		for a % 8 != 0 {
+			a = (a*factor) % modValue
+		}
+	}
+	return 
 }
+
 
 func compareValues(valA, valB int) (bool) {
 	return (valA % 65536) == (valB % 65536)
