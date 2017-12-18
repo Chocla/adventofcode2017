@@ -1,32 +1,10 @@
 package main
 
 import (
-	"encoding/hex"
+	"strconv"
+	//"encoding/hex"
 )
 const listSize = 256
-//const input = "192,69,168,160,78,1,166,28,0,83,198,2,254,255,41,12"
-
-func main() {
-	//convert string input into slice of bytes
-
-	// lengths := []byte(input)
-	// lengths = append(lengths,  []byte{17,31,73,47,23}...)
-	
-	//make a slice of integers from 0 to 255
-	// list := make([]int,listSize)
-	// for i := range list {
-	// 	list[i] = i
-	// }
-
-	//sparse hash
-	//sparseHash(list,lengths)
-
-	//reduce to dense hash
-	//dense := denseHash(list)
-	
-	//encode and display as hexadecimal
-	//fmt.Println(hex.EncodeToString(dense),"\nTime: ",time.Since(t0))
-} 
 
 func knotHash(in string) (hash string) {
 
@@ -45,8 +23,11 @@ func knotHash(in string) (hash string) {
 
 	//reduce to dense hash
 	dense := denseHash(list)
-
-	return hex.EncodeToString(dense)
+	str := ""
+	for i := range dense {
+		str += strconv.FormatInt(int64(dense[i]),2)
+	}
+	return str
 }
 
 func sparseHash(list []int, lengths []byte)  {
