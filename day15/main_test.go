@@ -2,11 +2,6 @@ package main
 
 import "testing"
 
-func TestFoo(t *testing.T) {
-	//genA,genB := 65,8921 
-
-}
-
 func TestSim(t *testing.T) {
 	res := simulation(65,8921)
 	if res != 588 {
