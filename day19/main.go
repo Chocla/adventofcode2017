@@ -11,8 +11,8 @@ const inputPath = "input.txt"
 func main() {
 	g := createGrid(inputPath)
 	x,y,dir := findStartPos(g[0]),0,2
-	str := walkPath(x,y,dir,g)
-	fmt.Println(string(str))
+	str,steps := walkPath(x,y,dir,g)
+	fmt.Println(string(str),steps)
 }
 
 //if an adjacent position isn't a space
@@ -39,7 +39,7 @@ func findStartPos(g []byte) (x int) {
 	}
 	return -1
 }
-func walkPath(x,y,dir int, g [][]byte) (seenLetters []byte) {
+func walkPath(x,y,dir int, g [][]byte) (seenLetters []byte,steps int) {
 	for {
 		switch dir {
 		case 0: y -= 1
@@ -53,6 +53,7 @@ func walkPath(x,y,dir int, g [][]byte) (seenLetters []byte) {
 		default:
 			panic("Bad Dir")
 		}
+		steps++
 		//check new position for special cases
 		switch g[y][x] {
 		case 124: break // |
