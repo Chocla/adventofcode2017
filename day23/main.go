@@ -1,78 +1,35 @@
 package main
 
 import (
-	"bufio"
-	"os"
 	"fmt"
-	"strings"
-	"strconv"
 )
 
-type instruction struct {
-	op string
-	reg string
-	val string
-}
-const inputPath = "input.txt"
 func main() {
-	reg := map[string]int{
-		"a": 0,
-		"b": 0,
-		"c": 0,
-		"d": 0,
-		"e": 0,
-		"f": 0,
-		"g": 0,
-		"h": 0,
-	}
-	ins := parseInstructions(inputPath)
-	count := execInstructions(ins,reg)
-	fmt.Println(count)
-}
-
-func execInstructions(ins []instruction, reg map[string]int) (c int) {
-	for i := 0; i < len(ins);i++ {
-		switch ins[i].op {
-		case "set":
-			reg[ins[i].reg] = convert(ins[i].val,reg)
-			break
-		case "sub":
-			reg[ins[i].reg] -= convert(ins[i].val,reg)
-			break
-		case "mul":
-			reg[ins[i].reg] *= convert(ins[i].val,reg)
-			c++
-			break
-		case "jnz":
-			if convert(ins[i].reg,reg) != 0 {
-				i += convert(ins[i].val,reg) - 1
+	//manually convert assembly code to Go code, and optimize
+	h := 0
+	f := false
+	for b := 109300; b <= 126300; b += 17 {
+		for d := 2; d < b && !f; d++ {
+			if b % d != 0 {
+				continue
 			}
-			break
-		default:
-			panic("Error: Unknown Command")
+			for e := 2; e < b && !f; e++ {
+				if b % e != 0 {
+					continue
+				}
+				if d*e == b {
+					f = true	
+				}
+				if h > 1000 {
+					fmt.Println(b,d,e,h)
+					return 
+				}
+			}	
+		}
+		if f {
+			h++
+			f = false
 		}
 	}
-	return 
-}
-func parseInstructions(path string) (ins []instruction) {
-	file,_ := os.Open(path)
-	defer file.Close()
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		parts := strings.Split(scanner.Text(), " ")
-		if len(parts) == 3 {
-			ins = append(ins, instruction{parts[0],parts[1], parts[2]})
-		} else {
-			ins = append(ins, instruction{parts[0],parts[1], ""})
-		}
-	}
-	return
-}
-func convert(value string, reg map[string]int) (int) {
-	numVal,err := strconv.Atoi(value)
-	if err != nil {
-		return reg[value] //value is another register
-	} else {
-		return numVal
-	}
+	fmt.Println(h)
 }
